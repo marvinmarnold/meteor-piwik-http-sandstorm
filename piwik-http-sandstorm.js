@@ -23,8 +23,12 @@ const track = (params, callback) => {
 }
 
 // FlowRouter triggersEnter hook to track
-const flowTrackEnter = (context, callback) => {
-  console.log(context);
+const flowTrackEnter = (context) => {
+  // Don't track if page has not changed
+  if(context.oldRoute &&
+    (context.oldRoute.name === context.route.name))
+    return
+
   const params = {
     url: Meteor.absoluteUrl(context.path.replace(/^\//,"")),
     action_name: context.route.name,
@@ -34,7 +38,7 @@ const flowTrackEnter = (context, callback) => {
 
   return track(params, (err, resp) => {
     if(!err)
-      console.log("Visit tracked at " + params.url);
+      console.log("Visit tracked on " + Meteor.settings.public.PIWIK.url + " to " + params.url);
   })
 }
 
