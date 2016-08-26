@@ -5,29 +5,29 @@ import { Random } from 'meteor/random';
 if(Meteor.isServer) {
   Meteor.methods({
     'piwik.track': function(params) {
+      // console.log("Visitor from " + this.connection.clientAddress);
       const endpoint = Meteor.settings.PIWIK.url
 
       if(endpoint) {
+        const thiz = this
         _.defaults(params, {
           idsite: 1,
           rec: 1,
           apiv: 1,
-          cip: this.connection.clientAddress,
-          ua: this.connection.httpHeaders["user-agent"],
-          urlref: this.connection.httpHeaders["referer"],
-          lang: this.connection.httpHeaders["accept-language"],
+          cip: thiz.connection.clientAddress,
+          ua: thiz.connection.httpHeaders["user-agent"],
+          urlref: thiz.connection.httpHeaders["referer"],
+          lang: thiz.connection.httpHeaders["accept-language"],
           rand: Random.id(),
           _id: Meteor.userId()
         })
-        console.log(params);
-        console.log(endpoint);
 
         HTTP.get(endpoint, {
           headers: {"Authorization": "Bearer " + Meteor.settings.PIWIK.sandstormAuth},
           params,
         }, (err, resp) => {
           if(!err) {
-            console.log("Visit tracked on " + endpoint + " to " + params.url);
+            // console.log("Visit tracked on " + endpoint + " to " + params.url);
           } else {
             console.log("Error tracking");
             console.log(err);
@@ -36,6 +36,7 @@ if(Meteor.isServer) {
         })
       }
 
+      // console.log("Visit not tracked because PIWIKI.url is empty.");
       return {}
     }
   });
