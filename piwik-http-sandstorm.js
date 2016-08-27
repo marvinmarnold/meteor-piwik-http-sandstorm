@@ -5,22 +5,24 @@ import { Random } from 'meteor/random';
 if(Meteor.isServer) {
   Meteor.methods({
     'piwik.track': function(params) {
-      // console.log("Visitor from " + this.connection.clientAddress);
+      console.log("Tracking a visit:");
       const endpoint = Meteor.settings.PIWIK.url
+      const thiz = this
+      const defaultParams = {
+        idsite: 1,
+        rec: 1,
+        apiv: 1,
+        cip: thiz.connection.clientAddress,
+        ua: thiz.connection.httpHeaders["user-agent"],
+        urlref: thiz.connection.httpHeaders["referer"],
+        lang: thiz.connection.httpHeaders["accept-language"],
+        rand: Random.id(),
+        _id: Meteor.userId()
+      }
+      console.log(defaultParams);
 
       if(endpoint) {
-        const thiz = this
-        _.defaults(params, {
-          idsite: 1,
-          rec: 1,
-          apiv: 1,
-          cip: thiz.connection.clientAddress,
-          ua: thiz.connection.httpHeaders["user-agent"],
-          urlref: thiz.connection.httpHeaders["referer"],
-          lang: thiz.connection.httpHeaders["accept-language"],
-          rand: Random.id(),
-          _id: Meteor.userId()
-        })
+        _.defaults(params, defaultParams)
 
         HTTP.get(endpoint, {
           headers: {"Authorization": "Bearer " + Meteor.settings.PIWIK.sandstormAuth},
