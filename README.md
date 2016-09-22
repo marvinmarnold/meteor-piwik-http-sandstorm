@@ -1,44 +1,34 @@
-# Setup
-Modify `settings.json` to include:
-````
-{
-  "public": {
-    "PIWIK": {
-      sandstormAuth: AUTHORIZATION_TOKEN_FROM_SANSTROM, // (see https://docs.sandstorm.io/en/latest/developing/http-apis/)
-      url: GRAIN_URL_ON_SANDSTORM
-    }
-  }
-}
-````
+Add Piwik tracking to your Meteor app. Compatible with Sandstorm hosted Piwik.
+
 # Installation
+From your Meteor project's root directory.
 ````
+// Copy the repo into the /packages folder
+mkdir packages
+cd packages
+git clone https://github.com/marvinmarnold/meteor-piwik-http-sandstorm.git piwik
+
+// Copy the example html file
+cd piwik
+cp example.html piwik.html
+
+// Modify piwiki.html to include your tracking code
+
+// Add the package to your project
+cd ../..
 meteor add marvin:piwik-http-sandstorm
 ````
-# Usage
 
-## Standalone
-````
-import { piwik } from 'meteor/marvin:piwik-http-sandstorm'
-import { Meteor } from 'meteor/meteor';
-import { Random } from 'meteor/random';
-
-piwik.track({
-    url: "http://example.com" // REQUIRED
-    action_name: "index",
-    _id: Meteor.userId(),
-    rand: Random.id()
-  }, (err, resp) => {
-    // Do something
-})
-````
-
-## FlowRouter
+## Usage
 ````
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
 import { piwik } from 'meteor/marvin:piwik-http-sandstorm';
 
+// To track page visits
 FlowRouter.triggers.enter([piwik.flowTrackEnter]);
+
+// To track actions
+piwik.trackAction(categoryName, actionName)
 ````
 
 ## Documentation

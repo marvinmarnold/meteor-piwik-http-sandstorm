@@ -8,13 +8,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.4.1');
-  api.use(['ecmascript', 'http', 'underscore', 'accounts-base', 'random']);
+  api.use(['ecmascript', 'static-html']);
+  api.addFiles("piwik.html", "client")
   api.mainModule('piwik-http-sandstorm.js');
-});
-
-Package.onTest(function(api) {
-  api.use('ecmascript');
-  api.use('tinytest');
-  api.use('marvin:piwik-http-sandstorm');
-  api.mainModule('piwik-http-sandstorm-tests.js');
 });
